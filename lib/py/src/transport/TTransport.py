@@ -398,6 +398,8 @@ class TSaslClientTransport(TTransportBase, CReadableTransport):
 
     def send_sasl_msg(self, status, body):
         header = pack(">BI", status, len(body))
+        if type(body) == str:
+            body = body.encode()
         self.transport.write(header + body)
         self.transport.flush()
 
@@ -416,7 +418,8 @@ class TSaslClientTransport(TTransportBase, CReadableTransport):
     def flush(self):
         data = self.__wbuf.getvalue()
         encoded = self.sasl.wrap(data)
-        self.transport.write(''.join((pack("!i", len(encoded)), encoded)))
+        packed = pack("!i", len(encoded))
+        self.transport.write(packed + encoded)
         self.transport.flush()
         self.__wbuf = BufferIO()
 
