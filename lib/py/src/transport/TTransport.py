@@ -371,6 +371,9 @@ class TSaslClientTransport(TTransportBase, CReadableTransport):
         self.__wbuf = BufferIO()
         self.__rbuf = BufferIO(b'')
 
+    def isOpen(self):
+        return self.transport.isOpen()
+
     def open(self):
         if not self.transport.isOpen():
             self.transport.open()
